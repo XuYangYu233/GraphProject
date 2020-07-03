@@ -30,26 +30,26 @@ void print_error()
 
 int main(int argc, char* argv[])
 {
-    if (argc == 2 && (!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help"))) {
+    if (argc == 2 && (!strcmp_p(argv[1], "-h") || !strcmp_p(argv[1], "--help"))) {
         print_help();
-    } else if (!strcmp(argv[1], "-g") || !strcmp(argv[1], "--graph")) {
-        if ((!strcmp(argv[3], "-s") || !strcmp(argv[3], "--stats")) && argc == 5) {
-            if (!strcmp(argv[4], "edges")) {
+    } else if (!strcmp_p(argv[1], "-g") || !strcmp_p(argv[1], "--graph")) {
+        if ((!strcmp_p(argv[3], "-s") || !strcmp_p(argv[3], "--stats")) && argc == 5) {
+            if (!strcmp_p(argv[4], "edges")) {
                 /*numberOfEdges(argv[2])*/
-            } else if (!strcmp(argv[4], "vertices")) {
+            } else if (!strcmp_p(argv[4], "vertices")) {
                 /*numberOfVertices(argv[2])*/
-            } else if (!strcmp(argv[4], "freeman")) {
+            } else if (!strcmp_p(argv[4], "freeman")) {
                 /*freemanNetworkCentrality(argv[2])*/
-            } else if (!strcmp(argv[4], "closeness")) {
+            } else if (!strcmp_p(argv[4], "closeness")) {
                 /*closenessCentrality(argv[2])*/
             } else {
                 print_error();
             }
-        } else if ((!strcmp(argv[3], "-sp") || !strcmp(argv[3], "--shortestpath")) && argc == 9) {
+        } else if ((!strcmp_p(argv[3], "-sp") || !strcmp_p(argv[3], "--shortestpath")) && argc == 9) {
             printf("%s\n", shortestPath(atoi(argv[6]), atoi(argv[8]), argv[4], argv[2]));
-            printf("cost: %d", weights);
+            printf("cost: %d\n", weights);
         }
-    } else if (argc == 2 && !strcmp(argv[1], "-j")) {
+    } else if (argc == 2 && !strcmp_p(argv[1], "-j")) {
         print_suantou();
     } else {
         print_error();

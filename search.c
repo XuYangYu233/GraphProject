@@ -5,12 +5,11 @@ char* shortestPath(int u, int v, char algorithm[], char name[])
     AdjGraph* G;
     CreateAdj(&G, name);
 
-    if (!strcmp(algorithm, "DFS")) {
+    if (!strcmp_p(algorithm, "DFS")) {
         return DFS(u, v, G);
-    } else if (!strcmp(algorithm, "BFS")) {
+    } else if (!strcmp_p(algorithm, "BFS")) {
         return BFS(u, v, G);
-    } else if (!strcmp(algorithm, "Dijkstra")) {
-        printf("还好吗? u %d  v %d\n", u, v);
+    } else if (!strcmp_p(algorithm, "Dijkstra")) {
         return Dijkstra(u, v, G);
     } else {
         return "找不到算法\n";
@@ -54,80 +53,68 @@ void CreateAdj(AdjGraph** G, char* name)
     }
 }
 
-void DestroyAdj(AdjGraph* G)
-{
-    int i;
-    ArcNode *pre, *p;
-    for (i = 0; i < G->n; i++) {
-        pre = G->adjlist[i].firstarc;
-        if (pre != NULL) {
-            p = pre->nextarc;
-            while (p != NULL) {
-                free(pre);
-                pre = p;
-                p = p->nextarc;
-            }
-            free(pre);
-        }
-    }
-    free(G);
-}
-
-int visited[MAXV] = { 0 };
-char output[MAXV] = "?";
-int weights = 0;
-
-int DFS_dg(int u, int v, AdjGraph* G)
-{
-    ArcNode* p;
-    char temp[200];
-    int flag = 0;
-    visited[u] = 1;
-    p = G->adjlist[u].firstarc;
-    sprintf(temp, "%d", u);
-    if (u == v) {
-        strcat(output, temp);
-        return 1;
-    }
-    while (p != NULL) {
-        if (visited[p->adjvex] == 0) {
-            weights += p->weight;
-            flag = DFS_dg(p->adjvex, v, G);
-            if (flag == 1) {
-                strcat(temp, " -> ");
-                strcat(temp, output);
-                strcpy(output, temp);
-                return 1;
-            }
-            weights -= p->weight;
-        }
-        p = p->nextarc;
-    }
-    visited[u] = 0;
-    return 0;
-}
-
 char* DFS(int u, int v, AdjGraph* G)
 {
-    DFS_dg(u, v, G);
-    return output;
-}
-
-void DispAdj(AdjGraph* G)
-{
-    int i;
-    ArcNode* p;
-    for (i = 0; i < G->n; i++) {
-        if (i < 12180 && i > 12160 || i < 9330 && i > 9100) {
-            p = G->adjlist[i].firstarc;
-            printf("%3d : ", i);
-            while (p != NULL) {
-                printf("%3d[%d]->", p->adjvex, p->weight);
-                p = p->nextarc;
+    ArcNode *ptr;
+    char tmp_str[MAXV];
+    Box *b_stack, trans, *waste, change;
+    int pop_out, top = -1, rear = -1, i;
+    b_stack = (Box *)calloc(MAXV/2, sizeof(Box));
+    waste = (Box *)calloc(MAXV/2, sizeof(Box));
+    ptr = G->adjlist[u].firstarc;
+    while (ptr != NULL) {
+        top++;
+        b_stack[top].val = ptr->adjvex;
+        b_stack[top].wei = ptr->weight;
+        b_stack[top].pre = -1;
+        visited[ptr->adjvex] = 1;
+        ptr = ptr->nextarc;
+    }
+    visited[u] = 1;
+    while (top >= 0) {
+        trans = b_stack[top];
+        for (i = 0; i < top; i++) {
+            if (b_stack[i].pre == trans.pre && b_stack[i].wei < trans.wei) {
+                change = b_stack[i];
+                b_stack[i] = trans;
+                trans = change;
             }
-            printf("NULL\n");
+        }
+        top--;
+        rear++;
+        waste[rear] = trans;
+        //printf("出队:%d  父节点:%d  权值:%d\n", trans.val, waste[trans.pre].val, trans.wei);
+        if (trans.val == v) {
+            sprintf(output, "%d", trans.val);
+            weights += trans.wei;
+            trans = waste[trans.pre];
+            break;
+        }
+        ptr = G->adjlist[trans.val].firstarc;
+        while (ptr != NULL) {
+            if (visited[ptr->adjvex] == 0) {
+                visited[ptr->adjvex] = 1;
+                top++;
+                b_stack[top].val = ptr->adjvex;
+                b_stack[top].wei = ptr->weight;
+                b_stack[top].pre = rear;
+            }
+            ptr = ptr->nextarc;
         }
     }
+    while (trans.pre != -1) {
+        weights += trans.wei;
+        sprintf(tmp_str, "%d -> ", trans.val);
+        strcat_p(tmp_str, output);
+        strcpy_p(output, tmp_str);
+        trans = waste[trans.pre];
+    }
+    weights += trans.wei;
+    sprintf(tmp_str, "%d -> %d -> ", u, trans.val);
+    strcat_p(tmp_str, output);
+    strcpy_p(output, tmp_str);
+
+    return output;
 }
 
 char* BFS(int u, int v, AdjGraph* G)
@@ -137,21 +124,22 @@ char* BFS(int u, int v, AdjGraph* G)
     ArcNode* p;
     SqQueue* qu;
     Box temp, ptr;
-    char token[2000];
+    char token[MAXSTR];
     InitQueue(&qu);
     visited[u] = 1;
     temp.val = u;
     temp.pre = -1;
     temp.wei = 0;
     enQueue(qu, temp);
+    strcpy_p(output, "unreachable");
     while (!QueueEmpty(qu)) {
         deQueue(qu, &ptr);
         visited[ptr.val] = 1;
         //printf("出队节点:%d  父节点位置:%d  weights:%d\n", ptr.val, ptr.pre, ptr.wei);
         if (ptr.val == v) {
             weights = ptr.wei;
-            //printf("%d %d\n", ptr.wei, p->weight);
             sprintf(output, "%d", v);
+            ptr = qu->data[ptr.pre];
             break;
         }
         p = G->adjlist[ptr.val].firstarc;
@@ -166,51 +154,44 @@ char* BFS(int u, int v, AdjGraph* G)
             p = p->nextarc;
         }
     }
-    ptr = qu->data[ptr.pre];
+
     while (ptr.pre != -1) {
         sprintf(token, "%d", ptr.val);
-        strcat(token, " -> ");
-        strcat(token, output);
-        strcpy(output, token);
+        strcat_p(token, " -> ");
+        strcat_p(token, output);
+        strcpy_p(output, token);
         ptr = qu->data[ptr.pre];
     }
     sprintf(token, "%d", ptr.val);
-    strcat(token, " -> ");
-    strcat(token, output);
-    strcpy(output, token);
+    strcat_p(token, " -> ");
+    strcat_p(token, output);
+    strcpy_p(output, token);
     return output;
 }
 
 //Dijkstra算法
-
-
 char* Dijkstra(int u, int v, AdjGraph* G)
 {
 
     int *distance, *parent;
     distance = (int *)calloc(G->maxnode, sizeof(int));
     parent = (int *)calloc(G->maxnode, sizeof(int));
-    //int visited[MAXV];
     int MINdis, i, j, k;
     ArcNode* ptr;
+    SqQueue *qu;
+    Box temp;
+    InitQueue(&qu);
     ptr = G->adjlist[u].firstarc;
     for (i = 0; i < G->maxnode; i++) {
-        /*if (ptr != NULL) {
-            distance[ptr->adjvex] = ptr->weight;
-            ptr = ptr->nextarc;
-            if (ptr->weight < INF) {
-                parent[ptr->adjvex] = u;
-            } else {
-                parent[ptr->adjvex] = -1;
-            }
-        }*/
-        //distance[i] = g.edges[u][i];
         distance[i] = INF;
         parent[i] = -1;
         visited[i] = 0;
     }
     while (ptr != NULL) {
         distance[ptr->adjvex] = ptr->weight;
+        temp.val = ptr->adjvex;
+        temp.wei = ptr->weight;
+        enQueue(qu, temp);
         if (ptr->weight < INF) {
             parent[ptr->adjvex] = u;
         } else {
@@ -222,28 +203,23 @@ char* Dijkstra(int u, int v, AdjGraph* G)
     visited[u] = 1;
     parent[u] = 0;
     for (i = 0; i < G->n; i++) {
+        temp.val = u;
         MINdis = INF;
-        for (j = 0; j < G->maxnode; j++) {
-            if (visited[j] == 0 && distance[j] < MINdis) {
-                k = j;
-                MINdis = distance[j];
-            }
-        }
+        deQueue(qu, &temp);
+        //printf("出队:%d  wei:%d\n", k, distance[k]);
+        k = temp.val;
         visited[k] = 1;
-        for (j = 0; j < G->maxnode; j++) {
-            if (visited[j] == 0) {
-                ptr = G->adjlist[k].firstarc;
-                while (ptr != NULL && ptr->adjvex != j) {
-                    ptr = ptr->nextarc;
-                }
-                if (ptr == NULL) {
-                    continue;
-                }
-                if (/*g.edges[k][j]*/ ptr->weight < INF && distance[k] + ptr->weight /*g.edges[k][j]*/ < distance[j]) {
-                    distance[j] = distance[k] + /*g.edges[k][j]*/ ptr->weight;
-                    parent[j] = k;
-                }
+        ptr = G->adjlist[k].firstarc;
+        while (ptr != NULL) {
+            j = ptr->adjvex;
+            if (ptr->weight < INF && distance[k] + ptr->weight < distance[j] && visited[j] == 0) {
+                distance[j] = distance[k] + ptr->weight;
+                temp.val = j;
+                temp.wei = distance[j];
+                enQueue(qu, temp);
+                parent[j] = k;
             }
+            ptr = ptr->nextarc;
         }
     }
     Dispath(G, distance, parent, visited, u, v);
@@ -253,15 +229,17 @@ char* Dijkstra(int u, int v, AdjGraph* G)
 void Dispath(AdjGraph* G, int dist[], int path[], int S[], int u, int v)
 {
     int i, j, k;
-    int apath[MAXV], d;
-    i = v;    printf("还好吗? i %d\n", i);
+    int *apath, d;
+    char temp[MAXSTR];
+    apath = (int *)calloc(G->maxnode, sizeof(int));
+    i = v;
     if (S[i] == 1 && i != u) {
-        printf("从顶点%d到顶点%d的路径长度为:%d\t路径为:", u, i, dist[i]);
+        weights = dist[i];
         d = 0;
         apath[d] = i;
         k = path[i];
         if (k == -1) {
-            printf("无路径\n");
+            strcpy_p(output, "无路径");
         } else {
             while (k != u) {
                 d++;
@@ -270,16 +248,17 @@ void Dispath(AdjGraph* G, int dist[], int path[], int S[], int u, int v)
             }
             d++;
             apath[d] = u;
-            printf("%d", apath[d]);
+            sprintf(temp, "%d", apath[d]);
+            strcat_p(output, temp);
             for (j = d - 1; j >= 0; j--) {
-                printf(",%d", apath[j]);
+                sprintf(temp, " -> %d", apath[j]);
+                strcat_p(output, temp);
             }
-            printf("\n");
         }
     }
 }
 
-int strcmp(char* destination, char* source)
+int strcmp_p(char* destination, char* source)
 {
     int i = 0;
     while (1) {
@@ -295,7 +274,7 @@ int strcmp(char* destination, char* source)
     }
 }
 
-void strcat(char destination[], char source[])
+void strcat_p(char destination[], char source[])
 {
     int i = 0, j = 0;
     while (destination[i] != '\0') {
@@ -308,7 +287,7 @@ void strcat(char destination[], char source[])
     destination[i + j] = '\0';
 }
 
-void strcpy(char destination[], char source[])
+void strcpy_p(char destination[], char source[])
 {
     int i = 0;
     while (source[i] != '\0') {
@@ -322,11 +301,6 @@ void InitQueue(SqQueue** q)
 {
     *q = (SqQueue*)malloc(sizeof(SqQueue));
     (*q)->front = (*q)->rear = -1;
-}
-
-void DestroyQueue(SqQueue* q)
-{
-    free(q);
 }
 
 bool QueueEmpty(SqQueue* q)

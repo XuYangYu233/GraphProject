@@ -11,4 +11,4 @@ stats.o: stats.c stats.h
 	gcc -c stats.c stats.h
 
 clean:
-	del *.o
+	del *.o *.gch

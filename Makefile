@@ -14,4 +14,4 @@ queue.o : queue.c queue.h
 	gcc -c queue.c queue.h
 
 clean:
-	del *.o *.gch
+	rm -f *.o *.gch

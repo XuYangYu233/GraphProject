@@ -10,8 +10,8 @@
 #define false 0
 #define MAXSIZE 9000000 //2600000
 typedef struct {
-    int val;
-    long long wei, pre;
+    int val, pre;
+    long long wei;
 } Box;
 typedef Box ElemType;
 typedef struct {

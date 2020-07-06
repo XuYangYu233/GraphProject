@@ -88,7 +88,7 @@ char* DFS(int u, int v, AdjGraph* G)
     }
     visited[u] = 1;
     while (top >= 0) {
-        trans = b_stack[top];
+        trans = b_stack[top]; //出栈
         top--;
         rear++;
         waste[rear] = trans;
@@ -102,7 +102,7 @@ char* DFS(int u, int v, AdjGraph* G)
         while (ptr != NULL) {
             if (visited[ptr->adjvex] == 0) {
                 visited[ptr->adjvex] = 1;
-                top++;
+                top++; //进栈
                 b_stack[top].val = ptr->adjvex;
                 b_stack[top].wei = ptr->weight;
                 b_stack[top].pre = rear;
@@ -145,12 +145,11 @@ char* BFS(int u, int v, AdjGraph* G)
     InitQueue(&qu);
 
     for (i = 0; i < G->maxnode + 1; i++) {
-        distance[i] = INF;
+        distance[i] = INF; // 初始化distance数组
     }
 
     visited[u] = 1;
     temp.val = u;
-    temp.pre = 0;
     temp.wei = 0;
     enQueue(qu, temp);
     path[u] = -1;
@@ -162,16 +161,13 @@ char* BFS(int u, int v, AdjGraph* G)
         p = G->adjlist[ptr.val].firstarc;
         while (p != NULL) {
             if (distance[p->adjvex] > distance[ptr.val] + p->weight) {
-                distance[p->adjvex] = distance[ptr.val] + p->weight;
+                distance[p->adjvex] = distance[ptr.val] + p->weight; //松弛
                 if (visited[p->adjvex] == 0) {
                     temp.val = p->adjvex;
-                    temp.pre = p->weight;
-                    temp.wei = ptr.wei + p->weight;
                     enQueue(qu, temp);
                     visited[p->adjvex] = 1;
-                    
                 }
-                path[p->adjvex] = ptr.val;
+                path[p->adjvex] = ptr.val;      //记录路径
             }
             p = p->nextarc;
         }
@@ -196,7 +192,6 @@ char* BFS(int u, int v, AdjGraph* G)
 //Dijkstra算法
 char* Dijkstra(int u, int v, AdjGraph* G)
 {
-
     int* parent;
     long long* distance;
     distance = (long long*)calloc(G->maxnode + 1, sizeof(long long));
@@ -205,7 +200,7 @@ char* Dijkstra(int u, int v, AdjGraph* G)
     if (visited == NULL || distance == NULL || parent == NULL) {
         printf("内存申请失败\n");
     }
-    int MINdis, i, j, k;
+    int i, j, k;
     ArcNode* ptr;
     SqQueue* qu;
     Box temp;
@@ -241,16 +236,16 @@ char* Dijkstra(int u, int v, AdjGraph* G)
         while (ptr != NULL) {
             j = ptr->adjvex;
             if (ptr->weight < INF && distance[k] + ptr->weight < distance[j] && visited[j] == 0) {
-                distance[j] = distance[k] + ptr->weight;
+                distance[j] = distance[k] + ptr->weight;    // 松弛
                 temp.val = j;
                 temp.wei = distance[j];
                 enPQueue(qu, temp);
-                parent[j] = k;
+                parent[j] = k;  // 记录路径
             }
             ptr = ptr->nextarc;
         }
     }
-    Dispath(G, distance, parent, visited, u, v);
+    Dispath(G, distance, parent, visited, u, v);    //处理路径
     return output;
 }
 
@@ -273,7 +268,7 @@ void Dispath(AdjGraph* G, long long dist[], int path[], char S[], int u, int v)
             while (k != u) {
                 d++;
                 apath[d] = k;
-                k = path[k];
+                k = path[k]; //将原本反向的路径正向放入apath
             }
             d++;
             apath[d] = u;
@@ -327,87 +322,3 @@ void strcpy_p(char destination[], char source[])
     }
     destination[i] = '\0';
 }
-/*
-void InitQueue(SqQueue** q)
-{
-    *q = (SqQueue*)calloc(1, sizeof(SqQueue));
-    if (*q == NULL) {
-        printf("队列申请失败\n");
-    }
-    printf("q->rear地址 = %p\n", &(*q)->rear);
-    (*q)->front = (*q)->rear = 0; //-1;
-}
-
-bool QueueEmpty(SqQueue* q)
-{
-    return (q->front == q->rear);
-}
-bool enQueue(SqQueue* q, ElemType e)
-{
-    if ((q->rear + 1) % MAXSIZE == q->front) {
-        return false;
-    }
-    q->rear = (q->rear + 1) % MAXSIZE;
-    q->data[q->rear] = e;
-    return true;
-}
-
-bool deQueue(SqQueue* q, ElemType* e)
-{
-    if (q->front == q->rear) {
-        return false;
-    }
-    q->front = (q->front + 1) % MAXSIZE;
-    *e = q->data[q->front];
-    return true;
-}
-
-bool enPQueue(SqQueue* q, ElemType e)
-{    //printf("进队  q->rear = %lld\n", q->rear);
-    if (q->rear == MAXSIZE - 1) {
-        printf("优先队列顶不住了\n");
-        return false;
-    }
-    long long i;
-    printf("进队 q->rear地址 = %p 值 = %lld\n", &q->rear, q->rear);
-    i = ++q->rear;
-
-    for (; e.wei < q->data[i / 2].wei; i /= 2) {
-        q->data[i] = q->data[i / 2];printf("调整i = %lld\n", i);
-    }
-    printf("进队完毕\n");
-    q->data[i] = e;
-
-    return true;
-}
-
-bool dePQueue(SqQueue* q, ElemType* e)
-{
-    long long parent;
-    long long child;
-    ElemType min, last;
-
-    if (q->rear == 0) {
-        //printf("出队失败\n");
-        return false;
-    }
-
-    min = q->data[1];
-    last = q->data[q->rear--];
-
-    for (parent = 1; parent * 2 <= q->rear; parent = child) {
-        child = parent * 2;
-        if (child != q->rear && q->data[child + 1].wei < q->data[child].wei) {
-            child++;
-        }
-        if (last.wei > q->data[child].wei) {
-            q->data[parent] = q->data[child];
-        } else {
-            break;
-        }
-    }
-    q->data[parent] = last;
-    *e = min;
-    printf("出队 q->rear = %lld\n", q->rear);
-    return true;
-}*/

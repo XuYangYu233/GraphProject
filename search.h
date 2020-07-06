@@ -26,42 +26,13 @@ typedef struct {
 } AdjGraph; //邻接表
 
 #endif
-/*
-#ifndef __QUEUE__
-#define __QUEUE__
 
-#define bool int
-#define true 1
-#define false 0
-#define MAXSIZE 9000000 //2600000
-typedef struct {
-    int val;
-    long long wei, pre;
-} Box;
-typedef Box ElemType;
-typedef struct {
-    ElemType data[MAXSIZE];
-    long long front;
-    long long rear;  //size
-} SqQueue; //顺序队
-
-void InitQueue(SqQueue** q);
-bool QueueEmpty(SqQueue* q);
-bool enQueue(SqQueue* q, ElemType e);
-bool deQueue(SqQueue* q, ElemType* e);
-bool enPQueue(SqQueue* q, ElemType e);
-bool dePQueue(SqQueue* q, ElemType* e);
-
-#endif
-*/
-
-void strcpy_p(char destination[], char source[]);
-void strcat_p(char destination[], char source[]);
-int strcmp_p(char destination[], char source[]);
+void strcpy_p(char destination[], char source[]); //strcpy
+void strcat_p(char destination[], char source[]); //strcat
+int strcmp_p(char destination[], char source[]);  //strcmp
 char* shortestPath(int u, int v, char algorithm[], char name[]);
-void CreateAdj(AdjGraph** G, char name[]);
+void CreateAdj(AdjGraph** G, char name[]);  //建立邻接表
 char* DFS(int u, int v, AdjGraph* G);
-int DFS_dg(int u, int v, AdjGraph* G);
 char* BFS(int u, int v, AdjGraph* G);
 char* Dijkstra(int u, int v, AdjGraph* G);
 void Dispath(AdjGraph* G, long long dist[], int path[], char S[], int u, int v);

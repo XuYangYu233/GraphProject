@@ -3,7 +3,6 @@
 
 float closenessCentrality(char name[], int u)
 {
-    //printf("u = %d\n", u);
     AdjGraph* G;
     int i, j;
     int temp_u, temp_v, temp_max;
@@ -46,8 +45,9 @@ float closenessCentrality(char name[], int u)
             G->n++;
         }
     }
-    free(n_list);
-    int MINdis, k;
+    free(n_list); // 完成邻接表
+
+    int k;
     ArcNode* ptr;
     SqQueue* qu = NULL;
     Box temp;
@@ -61,7 +61,6 @@ float closenessCentrality(char name[], int u)
         printf("内存申请失败\n");
     }
     InitQueue(&qu);
-    //printf("初始化完成\nq->rear地址 = %p\n", &qu->rear);
     ptr = G->adjlist[u].firstarc;
     for (i = 0; i <= G->maxnode; i++) {
         distance[i] = INF;
@@ -74,9 +73,6 @@ float closenessCentrality(char name[], int u)
             distance[ptr->adjvex] = ptr->weight;
             temp.val = ptr->adjvex;
             temp.wei = ptr->weight;
-
-            ///printf("close qu->rear地址 = %p 值 = %lld\n", &qu->rear, qu->rear);
-
             enPQueue(qu, temp);
             if (ptr->weight < INF) {
                 parent[ptr->adjvex] = u;
@@ -93,7 +89,6 @@ float closenessCentrality(char name[], int u)
         temp.val = u;
         dePQueue(qu, &temp);
         k = temp.val;
-        //printf("k = %d\n", k);
         visited[k] = 1;
 
         ptr = G->adjlist[k].firstarc;
@@ -103,14 +98,13 @@ float closenessCentrality(char name[], int u)
                 distance[j] = distance[k] + ptr->weight;
                 temp.val = j;
                 temp.wei = distance[j];
-                //printf("k = %d   j = %d\n", k, j);
                 enPQueue(qu, temp);
                 parent[j] = k;
             }
             ptr = ptr->nextarc;
         }
-    }
-    //printf("!!!!\n");
+    }           //完成Dijkstra
+
     double res = 0;
     j = 0;
     for (i = 0; i < G->maxnode + 2; i++) {
@@ -120,7 +114,8 @@ float closenessCentrality(char name[], int u)
         }
     }
     res /= (double)(j);
-    res = 1.0 / res;
+    res = 1.0 / res;    //累加除以点数再求倒
+
     return (float)res;
 }
 
@@ -144,7 +139,7 @@ float freemanNetworkCentrality(char* name)
     while (scanf("%d %d %lld", &temp_u, &temp_v, &temp_w) != EOF) {
         cc_flag = 0;
         if (temp_u > temp_max || temp_v > temp_max) {
-            temp_max = temp_u > temp_v ? temp_u : temp_v;
+            temp_max = temp_u > temp_v ? temp_u : temp_v;   //找出最大节点的编号
         }
         n_list[temp_u] = 1;
         n_list[temp_v] = 1;
@@ -156,7 +151,7 @@ float freemanNetworkCentrality(char* name)
             cc = cc->nextarc;
         }
         if (cc_flag == 1) {
-            continue;
+            continue;       //检测到重边则continue
         }
 
         p = (ArcNode*)malloc(sizeof(ArcNode));
@@ -167,7 +162,7 @@ float freemanNetworkCentrality(char* name)
         p->weight = temp_w;
         p->nextarc = G->adjlist[temp_u].firstarc;
         G->adjlist[temp_u].firstarc = p;
-        if (temp_u != temp_v) {
+        if (temp_u != temp_v) { //若起点和终点都为自己则不建立第二条边
             p = (ArcNode*)malloc(sizeof(ArcNode));
             if (p == NULL) {
                 printf("malloc申请内存失败\n");
@@ -183,7 +178,7 @@ float freemanNetworkCentrality(char* name)
     G->n = 0;
     for (i = 0; i <= G->maxnode; i++) {
         if (n_list[i] == 1) {
-            G->n++;
+            G->n++;     //找出节点数
         }
     }
     cdsum = 0;
@@ -199,7 +194,7 @@ float freemanNetworkCentrality(char* name)
             cdmax = j;
         }
         cdsum += j;
-    }
+    }       //找出最大度数和所有点度数之和
 
     res = (G->n) * cdmax;
     res -= cdsum;

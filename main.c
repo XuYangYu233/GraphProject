@@ -23,7 +23,58 @@ void print_help()
 
 void print_suantou()
 {
-    printf("这是蒜头君的画像\n");
+    printf("\n\
+                                                               1\n\
+                                                             .0i1C ti18\n\
+                                                            L;iitt;;tL\n\
+                                         t8C88CCC8C808Cfiiiiii;;8iiitCftt\n\
+                                    8;;;;;;;;iiiiiiiii;iiiiiiGiiiiiitftL\n\
+                                ;ii;;;;;;;iiiiiiiiiL8tiiiiiiiiiiiii1Cft8\n\
+                              ft1iiiiiiiiiiiiiCi;;;;;;iiiiiiiiiiiii1ttf8\n\
+          .G88f              8fttiiiiiiiii1t8iiiiiiiiiiiiiiiiiiiiiitLtft\n\
+         :;;;;;ii;L1C8CGLLG88CLft1ii;i;;CL:::;iCiiiiiiiiiiiiiii;ii1tLtttG\n\
+        ii;;;;L::::::::::::;;;;;;;i;C:::::;;;;;1Giiiiiiiiiiiiiii11tttLttfL\n\
+        ii;;:,,::::::,::::;fLCCi;;;;;;;;;;;;i;i1t1iiiiiiiiiiii11tttttfttttt\n\
+       8ii::,,,,::::LftfffLfff;;;;;;;;;;;;;;;;i11Liiiiii1111ttttttttffLftttt1\n\
+       1;;:::::::CttfffffffG;;;;;;;;;;;;;;;;;;i1tL1tttttttttttttttftttt8ttttti\n\
+     1;;;;:::,::::8fffLfLi;;;;;;;;;;;;;;;;;;;;i111ftttttttttttttffttttttt1tttf,\n\
+    C;::;;;;;ffi;;;;iL;i;;;;;i;;;;;;;;;;;;;;;i1111CtttttttttttttttttffttCtttttL\n\
+   1:GXXL;;;;Gti;;;;i;;;;;;;i:G;;i;iCXGX;;;;;i1111tit1ttfttfttttttftttttfttttttC\n\
+  .iX.GfXX1;;;i;i;;;;LL;;;;;;f::;;tX8ffLLX;;ii11t111111ttfffttfttttttttttttttttf\n\
+  fX.XtX;Xt;;;;;;;;Cfffi;;;;8:;:XX.1XXtXXXX11111111C11111Gtffftttttttttttttttttt\n\
+ LX..XX:,X;;;;;;;;8fffGi;;;;;:;X...XXX...XXX1111111G11GfLLLCfftttttttttfttttttff\n\
+ iX..XX.XX;;;;;;;;;;iG8;;;;;;;X....XXX,..XLX1111111111tCLLLLff8tttttfffttttttttG\n\
+:iX .fXXXi;;:;;;;;;;;;;;;;;;;;X...,CXLLXXXXX111111111111GLLLLLLfLCfftfttttttttfC\n\
+ti;XxXLXL:;::;;;;;;;;;;;;;;;;;X....,fXtXXXt81111111111111CLfLLLLLf1Gttttttttff8\n\
+GiGi;;;:;;;::;;;;;;;;;;;;;;;;;;XGX1XX;iiii1111111111111111CGfLLLLft1t8ftttfftC\n\
+ ittfLii;;;;:;;;;;i;;;;;;;;;;;;;;;;;;ii1111C1111tt11111111111111111111tfttCL\n\
+    L1111Gfiii;;;i;;;;;;iiiiiiiiiitiL8C11111111t8t111111111111111t111111Ci\n\
+      tf111CfffffftfffffffffffffffffL1111111111G111i;;ii111i11tt1iiii11118\n\
+         .L111Gtiiii1i1iii11i11tGL11111111ii81i;;;;;;;;;iif11tLi;;;i111111C\n\
+          1;;8t11t1GCGL1ttCCt111t11111118tf1;;;i;;;;;;;;ii11G;i;LffL1111111\n\
+          G;;;i;iit8L1111111111fC8ftffftf1;;;;;1fG;;;;;ii1t8;;Lttfff1111t118\n\
+          Ci;;iLfLii111ttfftttttffffffttti;i:;itff;;;;ii118iiGttffLLf111111C\n\
+           ;;ttttf111111tG111ttttfftttttt;811L;;;;;;;;i1i1i;;;8ffLLLC1111118\n\
+           L11tttL8111111111fCtt1tttttfCt111tG;;;;;;;iiiiG1111i18LG81111111C\n\
+            CfttfG11i111111t0    ttLCC8fttttLi;;;;;;ii1;LC1111111111111111t:\n\
+             t;;;ii1111111iC      8ftt8ffff1;;;;;;iii11ii011111111111111118\n\
+              C;11i11i11i1         GfCiLLGL;;;;;iiii;8    iftt11111111t1tL\n\
+             :XX,;11.C1X8             ;ii;;;;ii1111t        C01iG11tttitt\n\
+              .XXX XX X              ;.L;,.L1L1i1X             t;C;L:C\n\
+                                        XCiX ;XX\n\
++-------------------------------------------------------------------------------------+\n\
+|                                                                                     |\n\
+|                                                                                     |\n\
+|                                                                                     |\n\
+|                          呵呵，想不到你居然闯到了这里呢！                           |\n\
+|                      那么，就由我蒜头大魔王来做你的对手吧！                         |\n\
+|                                                                                     |\n\
+|                                    选择:                                            |\n\
+|                                                                                     |\n\
+|                     > 是                             > OK                           |\n\
+|                                                                                     |\n\
++-------------------------------------------------------------------------------------+\n\
+    \n");
 }
 
 void print_error()
@@ -64,127 +115,3 @@ int main(int argc, char* argv[])
 
     return 0;
 }
-
-/*
-float closenessCentrality(char name[], int u)
-{
-    printf("u = %d\n", u);
-    AdjGraph* G;
-    int i, j;
-    int temp_u, temp_v, temp_max;
-    long long temp_w;
-    char* n_list;
-    ArcNode* p;
-    n_list = (char*)calloc(MAXV, sizeof(char));
-    G = (AdjGraph*)malloc(sizeof(AdjGraph));
-    if (G == NULL) {
-        printf("图G申请失败\n");
-    }
-    for (i = 0; i < MAXV; i++) {
-        G->adjlist[i].firstarc = NULL;
-    }
-
-    freopen(name, "r", stdin);
-    G->e = 0;
-    temp_max = 0;
-    while (scanf("%d %d %lld", &temp_u, &temp_v, &temp_w) != EOF) {
-        G->e++;
-        if (temp_u > temp_max || temp_v > temp_max) {
-            temp_max = temp_u > temp_v ? temp_u : temp_v;
-        }
-        n_list[temp_u] = 1;
-        n_list[temp_v] = 1;
-        p = (ArcNode*)malloc(sizeof(ArcNode));
-        if (p == NULL) {
-            printf("p节点申请失败\n");
-        }
-        p->adjvex = temp_v;
-        p->weight = temp_w;
-        p->nextarc = G->adjlist[temp_u].firstarc;
-        G->adjlist[temp_u].firstarc = p;
-    }
-
-    G->maxnode = temp_max;
-    G->n = 0;
-    for (i = 0; i < MAXV; i++) {
-        if (n_list[i] == 1) {
-            G->n++;
-        }
-    }
-    free(n_list);
-    int MINdis, k;
-    ArcNode* ptr;
-    SqQueue* qu = NULL;
-    Box temp;
-    char* visited;
-    int* parent;
-    long long* distance;
-    distance = (long long*)calloc(G->maxnode + 1, sizeof(long long));
-    parent = (int*)calloc(G->maxnode + 1, sizeof(int));
-    visited = (char*)calloc(G->maxnode + 1, sizeof(char));
-    if (visited == NULL || distance == NULL || parent == NULL) {
-        printf("内存申请失败\n");
-    }
-    InitQueue(&qu);
-    printf("初始化完成\nq->rear地址 = %p\n", &qu->rear);
-    ptr = G->adjlist[u].firstarc;
-    for (i = 0; i <= G->maxnode; i++) {
-        distance[i] = INF;
-        parent[i] = -1;
-        visited[i] = 0;
-    }
-
-    while (ptr != NULL) {
-        if (ptr->adjvex != u) {
-            distance[ptr->adjvex] = ptr->weight;
-            temp.val = ptr->adjvex;
-            temp.wei = ptr->weight;
-
-            printf("close qu->rear地址 = %p 值 = %lld\n", &qu->rear, qu->rear);
-
-            enPQueue(qu, temp);
-            if (ptr->weight < INF) {
-                parent[ptr->adjvex] = u;
-            } else {
-                parent[ptr->adjvex] = -1;
-            }
-        }
-        ptr = ptr->nextarc;
-    }
-
-    visited[u] = 1;
-    parent[u] = 0;
-    while (!QueueEmpty(qu)) {
-        temp.val = u;
-        dePQueue(qu, &temp);
-        k = temp.val;
-        printf("k = %d\n", k);
-        visited[k] = 1;
-
-        ptr = G->adjlist[k].firstarc;
-        while (ptr != NULL) {
-            j = ptr->adjvex;
-            if (ptr->weight < INF && distance[k] + ptr->weight < distance[j] && visited[j] == 0) {
-                distance[j] = distance[k] + ptr->weight;
-                temp.val = j;
-                temp.wei = distance[j];
-                printf("k = %d   j = %d\n", k, j);
-                enPQueue(qu, temp);
-                parent[j] = k;
-            }
-            ptr = ptr->nextarc;
-        }
-    }
-    printf("!!!!\n");
-    double res = 0;
-    j = 0;
-    for (i = 0; i < G->maxnode + 2; i++) {
-        if (distance[i] < INF && distance[i] > 0 && i != u) {
-            res += (double)distance[i];
-            j++;
-        }
-    }
-    res /= (double)(j);
-    res = 1.0 / res;
-    return (float)res;
-}*/

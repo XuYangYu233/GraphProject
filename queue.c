@@ -6,8 +6,7 @@ void InitQueue(SqQueue** q)
     if (*q == NULL) {
         printf("队列申请失败\n");
     }
-    //printf("q->rear地址 = %p\n", &(*q)->rear);
-    (*q)->front = (*q)->rear = 0; //-1;
+    (*q)->front = (*q)->rear = 0;
 }
 
 bool QueueEmpty(SqQueue* q)
@@ -34,33 +33,30 @@ bool deQueue(SqQueue* q, ElemType* e)
     return true;
 }
 
-bool enPQueue(SqQueue* q, ElemType e)
-{    //printf("进队  q->rear = %lld\n", q->rear);
+bool enPQueue(SqQueue* q, ElemType e)  // 优先队列进队
+{ 
     if (q->rear == MAXSIZE - 1) {
         printf("优先队列顶不住了\n");
         return false;
     }
     long long i;
-    //printf("进队 q->rear地址 = %p 值 = %lld\n", &q->rear, q->rear);
     i = ++q->rear;
 
     for (; e.wei < q->data[i / 2].wei; i /= 2) {
-        q->data[i] = q->data[i / 2];//printf("调整i = %lld\n", i);
+        q->data[i] = q->data[i / 2];
     }
-    //printf("进队完毕\n");
     q->data[i] = e;
 
     return true;
 }
 
-bool dePQueue(SqQueue* q, ElemType* e)
+bool dePQueue(SqQueue* q, ElemType* e) // 优先队列出队
 {
     long long parent;
     long long child;
     ElemType min, last;
 
     if (q->rear == 0) {
-        //printf("出队失败\n");
         return false;
     }
 
@@ -80,6 +76,5 @@ bool dePQueue(SqQueue* q, ElemType* e)
     }
     q->data[parent] = last;
     *e = min;
-    //printf("出队 q->rear = %lld\n", q->rear);
     return true;
 }
